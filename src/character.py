@@ -1,6 +1,5 @@
 """
 Funciones del personaje:
-
 -Tiene vida (health) por default 100
 -Puede atacar o defender tantas veces como quiera
 -El ataque hace 10 de daño base, pero si el enemigo está defendiendo, hace la mitad
@@ -9,24 +8,44 @@ Funciones del personaje:
 """
 
 class Character:
+
     def __init__(self, name, health=100):
+
         self.name = name
         self.health = health
         self.is_defending = False
-        self.attack_bonus = 0  
+        self.cooldown = 3
 
     def attack(self, enemy):
-        damage = 10 + self.attack_bonus
+        damage = 20
+
         if enemy.is_defending:
+
             damage = damage // 2
+            damage = (damage // 10) * 10
+
 
         enemy.health = max(0, enemy.health - damage)
-        self.attack_bonus = 0  # reset bonus después de atacar
+
+        self.cooldown -= 1
         return damage
 
+    def super_attack(self, enemy):
+        damage = 40
+
+        if enemy.is_defending:
+            damage = damage // 2
+            damage = (damage // 10) * 10
+
+        enemy.health = max(0, enemy.health - damage)
+        self.cooldown = 3
+
+        return damage   
+
     def defend(self):
+
+        self.cooldown -= 1
         self.is_defending = True
-        self.attack_bonus += 5  # acumula daño para próximo ataque
         return True
 
     def reset_turn(self):
@@ -34,3 +53,6 @@ class Character:
 
     def get_health(self):
         return self.health
+    
+    def get_cooldown(self):
+        return self.cooldown
