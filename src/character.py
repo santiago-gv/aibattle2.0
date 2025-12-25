@@ -9,12 +9,13 @@ Funciones del personaje:
 
 class Character:
 
-    def __init__(self, name, health=100):
+    def __init__(self, name, speed, health=100):
 
         self.name = name
         self.health = health
         self.is_defending = False
         self.cooldown = 3
+        self.speed = speed  # NUEVO
 
     def attack(self, enemy):
         damage = 20
@@ -56,3 +57,5 @@ class Character:
     
     def get_cooldown(self):
         return self.cooldown
+    def get_speed(self):
+        return self.speed
