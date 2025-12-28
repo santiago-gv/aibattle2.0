@@ -224,6 +224,17 @@ class QLearningAgent:
         """Retorna True si todos los personajes del equipo están KO."""
         return all(not c.is_alive() for c in self.team)
 
+    def setgamma(self, gamma: float) -> None:
+
+        self.gamma = gamma
+
+    def setalpha(self, alpha: float) -> None:
+        self.alpha = alpha
+
+    def setepsilon(self, epsilon: float) -> None:
+  
+        self.epsilon = epsilon
+
 
 
         

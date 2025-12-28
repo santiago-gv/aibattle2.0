@@ -22,12 +22,12 @@ def create_team_a():
 
 def create_team_b():
     """Crea el equipo del Agente B: Offensive, Tank, Hybrid."""
-    
     return [
-        OffensiveCharacter("Offensive_B"),
         TankCharacter("Tank_B"),
+        OffensiveCharacter("Offensive_B"),
         HybridCharacter("Hybrid_B"),
     ]
+
 
 def main():
     # Crear equipos
@@ -37,11 +37,14 @@ def main():
     # Crear agentes con sus equipos
     agent_a = QLearningAgent(team_a)
     agent_b = QLearningAgent(team_b)
+    agent_a.setalpha(0.05)
+    agent_b.setalpha(0.2)
 
     # Crear batalla
     battle = Battle(agent_a, agent_b, initiative_mode="probabilistic")
 
     # Configuración de entrenamiento
+    
     EPISODES = 10000
     PRINT_EVERY = 500
 
@@ -51,13 +54,15 @@ def main():
     draws = 0
 
     print("=" * 60)
-    print("ENTRENAMIENTO Q-LEARNING: COMBATE 3v3 ESTILO POKÉMON")
+    print("ENTRENAMIENTO Q-LEARNING")
     print("=" * 60)
     print(f"\nEquipo A: {[c.char_type for c in team_a]}")
     print(f"Equipo B: {[c.char_type for c in team_b]}")
     print(f"\nEpisodios: {EPISODES}")
     print(f"Modo iniciativa: {battle._initiative_mode}")
     print("=" * 60)
+
+
 
     for episode in range(EPISODES):
         battle.reset_episode()

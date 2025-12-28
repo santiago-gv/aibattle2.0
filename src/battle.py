@@ -12,17 +12,20 @@ from typing import Tuple, List
 
 
 class Battle:
+    
     """
     Gestiona combates singles 3v3 entre dos agentes Q-Learning.
     """
 
     def __init__(self, agent_a, agent_b, initiative_mode: str = "probabilistic"):
+
         """
         Args:
             agent_a: Primer QLearningAgent con equipo de 3
             agent_b: Segundo QLearningAgent con equipo de 3
             initiative_mode: "probabilistic" | "deterministic" | "alternate" | "simultaneous"
         """
+
         self.agent_a = agent_a
         self.agent_b = agent_b
         self.actions_log: List[str] = []
