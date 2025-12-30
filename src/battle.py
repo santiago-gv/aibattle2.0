@@ -1,10 +1,10 @@
 """
-Sistema de batalla singles estilo Pokémon (3v3).
-
-Cada agente tiene un equipo de 3 personajes.
-Solo un personaje por equipo está activo a la vez.
-Acciones: attack, defend, super_attack, switch.
-Victoria: derrotar a los 3 personajes del oponente.
+# Sistema de batalla singles estil Pokémon (3v3).
+# 
+# Cada agent té un equip de 3 personatges.
+# Només un personatge per equip està actiu a la vegada.
+# Accions: attack, defend, super_attack, switch.
+# Victòria: derrotar els 3 personatges de l'oponent.
 """
 
 import random
@@ -14,15 +14,15 @@ from typing import Tuple, List
 class Battle:
     
     """
-    Gestiona combates singles 3v3 entre dos agentes Q-Learning.
+    Gestiona combats singles 3v3 entre dos agents Q-Learning.
     """
 
     def __init__(self, agent_a, agent_b, initiative_mode: str = "probabilistic"):
 
         """
         Args:
-            agent_a: Primer QLearningAgent con equipo de 3
-            agent_b: Segundo QLearningAgent con equipo de 3
+            agent_a: Primer QLearningAgent amb equip de 3
+            agent_b: Segon QLearningAgent amb equip de 3
             initiative_mode: "probabilistic" | "deterministic" | "alternate" | "simultaneous"
         """
 
@@ -34,7 +34,7 @@ class Battle:
 
     def _choose_order(self, a, b, action_a: str, action_b: str) -> Tuple[List, bool]:
         """
-        Determina el orden de ejecución según velocidad e initiative_mode.
+        Determina l'ordre d'execució segons velocitat i initiative_mode.
         
         Returns:
             (order_list, simultaneous_flag)
@@ -42,7 +42,7 @@ class Battle:
         if self._initiative_mode == "simultaneous":
             return [("A", a, b, action_a), ("B", b, a, action_b)], True
 
-        # Switches siempre tienen prioridad máxima (como en Pokémon)
+        # Switches sempre tenen prioritat màxima (com a Pokémon)
         a_switches = action_a == "switch"
         b_switches = action_b == "switch"
         
@@ -51,7 +51,7 @@ class Battle:
         elif b_switches and not a_switches:
             return [("B", b, a, action_b), ("A", a, b, action_a)], False
         
-        # Ambos switch o ninguno: usar velocidad
+        # Tots dos switch o cap: usar velocitat
         sa = a.character.get_speed()
         sb = b.character.get_speed()
 
@@ -59,24 +59,19 @@ class Battle:
             total = sa + sb
             p_a = (sa / total) if total > 0 else 0.5
             first = "A" if random.random() < p_a else "B"
-        elif self._initiative_mode == "alternate":
-            first = "A" if (self._initiative_toggle % 2 == 0) else "B"
-            self._initiative_toggle += 1
-        else:  # deterministic
-            first = "A" if sa >= sb else "B"
-
+        
         if first == "A":
             return [("A", a, b, action_a), ("B", b, a, action_b)], False
         else:
             return [("B", b, a, action_b), ("A", a, b, action_a)], False
 
     def _execute_action(self, attacker, defender, action: str) -> int:
-        # Ejecuta una acción y retorna el daño infligido (0 para switch/defend).
+        # Executa una acció i retorna el dany infligit (0 per switch/defend).
         if action == "switch":
             attacker.perform_switch()
             return 0
         elif action == "defend":
-            # Ya se activó antes
+            # Ja s'ha activat abans
             return 0
         elif action == "attack":
             return attacker.character.attack(defender.character)
@@ -86,96 +81,96 @@ class Battle:
 
     def step(self) -> bool:
         """
-        Ejecuta un turno completo de batalla.
+        Executa un torn complet de batalla.
         
         Returns:
-            True si la batalla continúa, False si terminó (un agente sin personajes vivos).
+            True si la batalla continua, False si ha acabat (un agent sense personatges vius).
         """
         a = self.agent_a
         b = self.agent_b
         turn_index = len(self.actions_log) + 1
 
-        # Capturar estado antes de actuar
+        # Capturar estat abans d'actuar
         state_a = a.get_state(b)
         state_b = b.get_state(a)
 
-        # Elegir acciones
+        # Triar accions
         action_a = a.choose_action(b)
         action_b = b.choose_action(a)
 
-        # Defensas se activan antes de cualquier ataque
+        # Defenses s'activen abans de qualsevol atac
         if action_a == "defend":
             a.character.defend()
         if action_b == "defend":
             b.character.defend()
 
-        # Determinar orden de ejecución
+        # Determinar ordre d'execució
         order, simultaneous = self._choose_order(a, b, action_a, action_b)
 
         damage = {"A": 0, "B": 0}
-        # Guardar los personajes que eligieron las acciones para el log
+        # Guardar els personatges que han triat les accions per al log
         char_a_at_action = a.character.char_type
         char_b_at_action = b.character.char_type
 
         if simultaneous:
-            # Ejecutar ambos sin cancelar por KO
+            # Executar tots dos sense cancel·lar per KO
             for label, attacker, defender, action in order:
                 dealt = self._execute_action(attacker, defender, action)
                 damage[label] = dealt
         else:
-            # Ejecutar en orden; cancelar si el objetivo muere
+            # Executar en ordre; cancel·lar si l'objectiu mor
             for label, attacker, defender, action in order:
-                # Switch siempre se puede ejecutar (incluso si el personaje actual está KO,
-                # porque puede que haya muerto en este mismo turno y el switch ya estaba elegido)
+                # Switch sempre es pot executar (fins i tot si el personatge actual està KO,
+                # perquè pot ser que hagi mort en aquest mateix torn i el switch ja estava triat)
                 if action == "switch":
-                    # Solo ejecutar si hay alguien a quien cambiar
+                    # Només executar si hi ha algú a qui canviar
                     if attacker.has_switch_available():
                         attacker.perform_switch()
                     continue
-                # Si el atacante ya está KO, no puede actuar (para ataques)
+                # Si l'atacant ja està KO, no pot actuar (per a atacs)
                 if not attacker.character.is_alive():
                     continue
-                # Si el defensor ya está KO, no atacamos (el ataque no tiene sentido)
+                # Si el defensor ja està KO, no ataquem (l'atac no té sentit)
                 if not defender.character.is_alive():
                     continue
                 dealt = self._execute_action(attacker, defender, action)
                 damage[label] = dealt
 
-        # Calcular recompensas
+        # Calcular recompenses
         reward_a = damage["A"] - damage["B"]
         reward_b = damage["B"] - damage["A"]
 
-        # Comprobar KOs y forzar cambios
+        # Comprovar KOs i forçar canvis
         a_char_fainted = not a.character.is_alive()
         b_char_fainted = not b.character.is_alive()
 
-        # Bonus/penalización por KO de personaje
+        # Bonus/penalització per KO de personatge
         if b_char_fainted:
-            reward_a += 50  # Bonus por KO enemigo
+            reward_a += 50  # Bonus per KO enemic
             reward_b -= 50
         if a_char_fainted:
             reward_b += 50
             reward_a -= 50
 
-        # Forzar cambio si el activo murió
+        # Forçar canvi si l'actiu ha mort
         if a_char_fainted:
             a.force_switch_if_fainted()
         if b_char_fainted:
             b.force_switch_if_fainted()
 
-        # Comprobar victoria/derrota total
+        # Comprovar victòria/derrota total
         a_all_fainted = a.all_fainted()
         b_all_fainted = b.all_fainted()
 
         if b_all_fainted and not a_all_fainted:
-            reward_a += 100  # Victoria
+            reward_a += 100  # Victòria
             reward_b -= 100
         elif a_all_fainted and not b_all_fainted:
             reward_b += 100
             reward_a -= 100
 
-        # Log del turno (usando los personajes que eligieron las acciones)
-        # También mostramos el personaje actual si cambió (por switch o force_switch)
+        # Log del torn (usant els personatges que han triat les accions)
+        # També mostrem el personatge actual si ha canviat (per switch o force_switch)
         char_a_final = a.character.char_type
         char_b_final = b.character.char_type
         
@@ -184,49 +179,49 @@ class Battle:
             f"A[{char_a_at_action}]={action_a} (dany={damage['A']}), "
             f"B[{char_b_at_action}]={action_b} (dany={damage['B']}) | "
             f"HP_A={a.character.get_health()}, HP_B={b.character.get_health()} | "
-            f"Vivos: A={a.count_alive()}, B={b.count_alive()}"
+            f"Vius: A={a.count_alive()}, B={b.count_alive()}"
         )
         
-        # Añadir información si el personaje activo cambió
+        # Afegir informació si el personatge actiu ha canviat
         changes = []
         if char_a_at_action != char_a_final:
-            changes.append(f"A ahora: {char_a_final}")
+            changes.append(f"A ara: {char_a_final}")
         if char_b_at_action != char_b_final:
-            changes.append(f"B ahora: {char_b_final}")
+            changes.append(f"B ara: {char_b_final}")
         if changes:
             log_entry += f" | {', '.join(changes)}"
         
         self.actions_log.append(log_entry)
 
-        # Capturar estado después de actuar
+        # Capturar estat després d'actuar
         next_state_a = a.get_state(b)
         next_state_b = b.get_state(a)
 
-        # Actualizar Q-tables
+        # Actualitzar Q-tables
         a.update_q(state_a, action_a, reward_a, next_state_a)
         b.update_q(state_b, action_b, reward_b, next_state_b)
 
-        # Reset estado de turno (defensa)
+        # Reset estat de torn (defensa)
         a.character.reset_turn()
         b.character.reset_turn()
 
-        # Retorna False si la batalla terminó
+        # Retorna False si la batalla ha acabat
         return not (a_all_fainted or b_all_fainted)
 
     def reset_episode(self) -> None:
-        # Reinicia la batalla para un nuevo episodio.
+        # Reinicia la batalla per a un nou episodi.
         self.actions_log = []
         self.agent_a.reset_for_episode()
         self.agent_b.reset_for_episode()
         self._initiative_toggle = 0
 
     def get_actions_log(self) -> List[str]:
-        # Retorna el log de acciones del episodio actual.
+        # Retorna el log d'accions de l'episodi actual.
         return self.actions_log
 
     def get_winner(self) -> str:
         """
-        Retorna el ganador del episodio.
+        Retorna el guanyador de l'episodi.
         
         Returns:
             "A", "B", o "draw"

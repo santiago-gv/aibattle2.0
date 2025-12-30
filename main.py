@@ -1,9 +1,9 @@
 """
-Entrenamiento Q-Learning para combate 3v3 estilo Pokémon.
+Entrenament Q-Learning per a combat 3v3 estil Pokémon.
 
-Dos agentes Q-Learning compiten con equipos de 3 personajes cada uno.
-Tipos de personaje: Tank, Hybrid, Offensive.
-Acciones: attack, defend, super_attack, switch.
+Dos agents Q-Learning competeixen amb equips de 3 personatges cadascun.
+Tipus de personatge: Tank, Hybrid, Offensive.
+Accions: attack, defend, super_attack, switch.
 """
 
 from src.character import TankCharacter, HybridCharacter, OffensiveCharacter
@@ -12,7 +12,7 @@ from src.battle import Battle
 
 
 def create_team_a():
-    # Crea el equipo del Agente A: Tank, Hybrid, Offensive.
+    # Crea l'equip de l'Agent A: Tank, Hybrid, Offensive.
 
     return [
         OffensiveCharacter("Offensive_A"),
@@ -23,7 +23,7 @@ def create_team_a():
 
 
 def create_team_b():
-    # Crea el equipo del Agente B: Offensive, Tank, Hybrid.
+    # Crea l'equip de l'Agent B: Offensive, Tank, Hybrid.
 
     return [
         TankCharacter("Tank_B"),
@@ -34,11 +34,11 @@ def create_team_b():
 
 
 def main():
-    # Crear equipos
+    # Crear equips
     team_a = create_team_a()
     team_b = create_team_b()
 
-    # Crear agentes con sus equipos
+    # Crear agents amb els seus equips
     agent_a = QLearningAgent(team_a)
     agent_b = QLearningAgent(team_b)
 
@@ -53,23 +53,23 @@ def main():
     # Crear batalla
     battle = Battle(agent_a, agent_b, initiative_mode="probabilistic")
 
-    # Configuración de entrenamiento
+    # Configuració d'entrenament
     
     EPISODES = 100000
     PRINT_EVERY = 500
 
-    # Contadores de victorias
+    # Comptadors de victòries
     wins_a = 0
     wins_b = 0
     draws = 0
 
     print("=" * 60)
-    print("ENTRENAMIENTO Q-LEARNING")
+    print("ENTRENAMENT Q-LEARNING")
     print("=" * 60)
-    print(f"\nEquipo A: {[c.char_type for c in team_a]}")
-    print(f"Equipo B: {[c.char_type for c in team_b]}")
-    print(f"\nEpisodios: {EPISODES}")
-    print(f"Modo iniciativa: {battle._initiative_mode}")
+    print(f"\nEquip A: {[c.char_type for c in team_a]}")
+    print(f"Equip B: {[c.char_type for c in team_b]}")
+    print(f"\nEpisodis: {EPISODES}")
+    print(f"Mode iniciativa: {battle._initiative_mode}")
     print("=" * 60)
 
 
@@ -77,13 +77,13 @@ def main():
     for episode in range(EPISODES):
         battle.reset_episode()
         
-        # Ejecutar episodio hasta que termine
-        max_turns = 100  # Límite de turnos para evitar bucles infinitos
+        # Executar episodi fins que acabi
+        max_turns = 100  # Límit de torns per evitar bucles infinits
         turn = 0
         while battle.step() and turn < max_turns:
             turn += 1
 
-        # Contabilizar resultado
+        # Comptabilitzar resultat
         winner = battle.get_winner()
         if winner == "A":
             wins_a += 1
@@ -92,53 +92,53 @@ def main():
         else:
             draws += 1
 
-        # Imprimir progreso periódicamente
+        # Imprimir progrés periòdicament
         if episode % PRINT_EVERY == 0:
             print(f"\n{'='*60}")
-            print(f"EPISODIO {episode}")
+            print(f"EPISODI {episode}")
             print(f"{'='*60}")
-            print(f"\nAcciones del episodio:")
-            for log in battle.get_actions_log()[-10:]:  # Últimos 10 turnos
+            print(f"\nAccions de l'episodi:")
+            for log in battle.get_actions_log()[-10:]:  # Últims 10 torns
                 print(f"  {log}")
             
-            print(f"\nResultado: Ganador = {winner}")
-            print(f"Marcador acumulado: A={wins_a} | B={wins_b} | Empates={draws}")
+            print(f"\nResultat: Guanyador = {winner}")
+            print(f"Marcador acumulat: A={wins_a} | B={wins_b} | Empats={draws}")
             
             # Winrate
             total = wins_a + wins_b + draws
             if total > 0:
                 print(f"Winrate: A={100*wins_a/total:.1f}% | B={100*wins_b/total:.1f}%")
 
-    # Resultados finales
+    # Resultats finals
     print("\n" + "=" * 60)
-    print("RESULTADOS FINALES")
+    print("RESULTATS FINALS")
     print("=" * 60)
-    print(f"\nVictorias Agente A: {wins_a}")
-    print(f"Victorias Agente B: {wins_b}")
-    print(f"Empates: {draws}")
+    print(f"\nVictòries Agent A: {wins_a}")
+    print(f"Victòries Agent B: {wins_b}")
+    print(f"Empats: {draws}")
     
     total = wins_a + wins_b + draws
     if total > 0:
         print(f"\nWinrate Final: A={100*wins_a/total:.1f}% | B={100*wins_b/total:.1f}%")
 
-    # Mostrar tamaño de Q-tables
-    print(f"\nEstados aprendidos Agente A: {len(agent_a.q_table)}")
-    print(f"Estados aprendidos Agente B: {len(agent_b.q_table)}")
+    # Mostrar mida de les Q-tables
+    print(f"\nEstats apresos Agent A: {len(agent_a.q_table)}")
+    print(f"Estats apresos Agent B: {len(agent_b.q_table)}")
 
-    # Mostrar algunos valores Q interesantes (top 10 por valor absoluto)
+    # Mostrar alguns valors Q interessants (top 10 per valor absolut)
     print("\n" + "-" * 40)
-    print("TOP 10 Q-VALUES (Agente A):")
+    print("TOP 10 Q-VALUES (Agent A):")
     print("-" * 40)
     sorted_q_a = sorted(agent_a.q_table.items(), key=lambda x: abs(x[1]), reverse=True)[:10]
     for (state, action), value in sorted_q_a:
-        print(f"  Estado {state}, Acción '{action}': {value:.2f}")
+        print(f"  Estat {state}, Acció '{action}': {value:.2f}")
 
     print("\n" + "-" * 40)
-    print("TOP 10 Q-VALUES (Agente B):")
+    print("TOP 10 Q-VALUES (Agent B):")
     print("-" * 40)
     sorted_q_b = sorted(agent_b.q_table.items(), key=lambda x: abs(x[1]), reverse=True)[:10]
     for (state, action), value in sorted_q_b:
-        print(f"  Estado {state}, Acción '{action}': {value:.2f}")
+        print(f"  Estat {state}, Acció '{action}': {value:.2f}")
 
 
 if __name__ == "__main__":

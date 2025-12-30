@@ -1,30 +1,30 @@
 import random
 
-# Agante simple con comportamiento aleatorio para pruebas.
-# Nota: Esta implementación no es compatible con el sistema actual de batalla (Battle)
-# que requiere gestión de equipos de 3 personajes.
+# Agent simple amb comportament aleatori per a proves.
+# Nota: Aquesta implementació no és compatible amb el sistema actual de batalla (Battle)
+# que requereix gestió d'equips de 3 personatges.
 
 class FixedAgent:
     """
-    Agente 'Fixed' (o Dummy) para pruebas básicas 1v1.
-    Controla un único personaje y toma decisiones aleatorias.
+    Agent 'Fixed' (o Dummy) per a proves bàsiques 1v1.
+    Controla un únic personatge i pren decisions aleatòries.
     
-    WARNING: No implementa la interfaz completa requerida por Battle (get_state, update_q, etc).
+    WARNING: No implementa la interfície completa requerida per Battle (get_state, update_q, etc).
     """
 
     def __init__(self, character):
-        # Inicializa el agente con un único personaje.
+        # Inicialitza l'agent amb un únic personatge.
         self.is_defending = False
         self.character = character
 
     def choose_action(self, enemy=None):
-        # Elige una acción aleatoria respetando el cooldown del superataque.
+        # Tria una acció aleatòria respectant el cooldown del superatac.
         
         if self.character.get_cooldown() <= 0:
-            # Si el cooldown está listo, incluye super_attack en las opciones.
+            # Si el cooldown està llest, inclou super_attack en les opcions.
             return random.choice(["super_attack", "attack", "defend"])
         else:
-            # Si no, solo ataca o defiende.
+            # Si no, només ataca o defensa.
             return random.choice(["attack", "defend"])
 
         
