@@ -13,20 +13,24 @@ from src.battle import Battle
 
 def create_team_a():
     """Crea el equipo del Agente A: Tank, Hybrid, Offensive."""
+
     return [
+        OffensiveCharacter("Offensive_A"),
         HybridCharacter("Hybrid_A"),
         TankCharacter("Tank_A"),
-        OffensiveCharacter("Offensive_A"),
+
     ]
 
 
 def create_team_b():
     """Crea el equipo del Agente B: Offensive, Tank, Hybrid."""
+
     return [
         TankCharacter("Tank_B"),
         OffensiveCharacter("Offensive_B"),
         HybridCharacter("Hybrid_B"),
     ]
+
 
 
 def main():
@@ -37,15 +41,21 @@ def main():
     # Crear agentes con sus equipos
     agent_a = QLearningAgent(team_a)
     agent_b = QLearningAgent(team_b)
-    agent_a.setalpha(0.05)
-    agent_b.setalpha(0.2)
+
+    agent_a.setalpha(0.1)
+    agent_b.setalpha(0.1)
+
+    agent_a.setgamma(0.95)
+    agent_b.setgamma(0.95)
+    agent_a.setepsilon(0.05)
+    agent_b.setepsilon(0.05)
 
     # Crear batalla
     battle = Battle(agent_a, agent_b, initiative_mode="probabilistic")
 
     # Configuración de entrenamiento
     
-    EPISODES = 10000
+    EPISODES = 100000
     PRINT_EVERY = 500
 
     # Contadores de victorias

@@ -115,6 +115,9 @@ class Battle:
         order, simultaneous = self._choose_order(a, b, action_a, action_b)
 
         damage = {"A": 0, "B": 0}
+        # Guardar los personajes que eligieron las acciones para el log
+        char_a_at_action = a.character.char_type
+        char_b_at_action = b.character.char_type
 
         if simultaneous:
             # Ejecutar ambos sin cancelar por KO
@@ -124,12 +127,15 @@ class Battle:
         else:
             # Ejecutar en orden; cancelar si el objetivo muere
             for label, attacker, defender, action in order:
-                # Si el atacante ya está KO, no puede actuar
-                if not attacker.character.is_alive():
-                    continue
-                # Switch siempre se puede ejecutar
+                # Switch siempre se puede ejecutar (incluso si el personaje actual está KO,
+                # porque puede que haya muerto en este mismo turno y el switch ya estaba elegido)
                 if action == "switch":
-                    attacker.perform_switch()
+                    # Solo ejecutar si hay alguien a quien cambiar
+                    if attacker.has_switch_available():
+                        attacker.perform_switch()
+                    continue
+                # Si el atacante ya está KO, no puede actuar (para ataques)
+                if not attacker.character.is_alive():
                     continue
                 # Si el defensor ya está KO, no atacamos (el ataque no tiene sentido)
                 if not defender.character.is_alive():
@@ -170,14 +176,29 @@ class Battle:
             reward_b += 100
             reward_a -= 100
 
-        # Log del turno
-        self.actions_log.append(
+        # Log del turno (usando los personajes que eligieron las acciones)
+        # También mostramos el personaje actual si cambió (por switch o force_switch)
+        char_a_final = a.character.char_type
+        char_b_final = b.character.char_type
+        
+        log_entry = (
             f"Torn {turn_index}: "
-            f"A[{a.character.char_type}]={action_a} (dany={damage['A']}), "
-            f"B[{b.character.char_type}]={action_b} (dany={damage['B']}) | "
+            f"A[{char_a_at_action}]={action_a} (dany={damage['A']}), "
+            f"B[{char_b_at_action}]={action_b} (dany={damage['B']}) | "
             f"HP_A={a.character.get_health()}, HP_B={b.character.get_health()} | "
             f"Vivos: A={a.count_alive()}, B={b.count_alive()}"
         )
+        
+        # Añadir información si el personaje activo cambió
+        changes = []
+        if char_a_at_action != char_a_final:
+            changes.append(f"A ahora: {char_a_final}")
+        if char_b_at_action != char_b_final:
+            changes.append(f"B ahora: {char_b_final}")
+        if changes:
+            log_entry += f" | {', '.join(changes)}"
+        
+        self.actions_log.append(log_entry)
 
         # Capturar estado después de actuar
         next_state_a = a.get_state(b)

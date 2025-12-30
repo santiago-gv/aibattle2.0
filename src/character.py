@@ -216,6 +216,7 @@ def create_character(char_type: str, name: str) -> Character:
     Returns:
         Instancia del tipo de personaje correspondiente
     """
+    
     if char_type not in CHARACTER_TYPES:
         raise ValueError(f"Tipo de personaje desconocido: {char_type}. Usa: {list(CHARACTER_TYPES.keys())}")
     return CHARACTER_TYPES[char_type](name)
