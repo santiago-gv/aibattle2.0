@@ -12,7 +12,7 @@ from src.battle import Battle
 
 
 def create_team_a():
-    """Crea el equipo del Agente A: Tank, Hybrid, Offensive."""
+    # Crea el equipo del Agente A: Tank, Hybrid, Offensive.
 
     return [
         OffensiveCharacter("Offensive_A"),
@@ -23,7 +23,7 @@ def create_team_a():
 
 
 def create_team_b():
-    """Crea el equipo del Agente B: Offensive, Tank, Hybrid."""
+    # Crea el equipo del Agente B: Offensive, Tank, Hybrid.
 
     return [
         TankCharacter("Tank_B"),

@@ -71,9 +71,7 @@ class Battle:
             return [("B", b, a, action_b), ("A", a, b, action_a)], False
 
     def _execute_action(self, attacker, defender, action: str) -> int:
-        """
-        Ejecuta una acción y retorna el daño infligido (0 para switch/defend).
-        """
+        # Ejecuta una acción y retorna el daño infligido (0 para switch/defend).
         if action == "switch":
             attacker.perform_switch()
             return 0
@@ -216,14 +214,14 @@ class Battle:
         return not (a_all_fainted or b_all_fainted)
 
     def reset_episode(self) -> None:
-        """Reinicia la batalla para un nuevo episodio."""
+        # Reinicia la batalla para un nuevo episodio.
         self.actions_log = []
         self.agent_a.reset_for_episode()
         self.agent_b.reset_for_episode()
         self._initiative_toggle = 0
 
     def get_actions_log(self) -> List[str]:
-        """Retorna el log de acciones del episodio actual."""
+        # Retorna el log de acciones del episodio actual.
         return self.actions_log
 
     def get_winner(self) -> str:

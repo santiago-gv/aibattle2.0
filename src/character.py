@@ -39,7 +39,7 @@ class Character(ABC):
     @property
     @abstractmethod
     def char_type(self) -> str:
-        """Retorna el tipo de personaje como string para el estado Q."""
+        # Retorna el tipo de personaje como string para el estado Q.
         pass
 
     def attack(self, enemy: "Character") -> int:
@@ -83,17 +83,17 @@ class Character(ABC):
         return True
 
     def reset_turn(self) -> None:
-        """Reinicia el estado de defensa al final del turno."""
+        # Reinicia el estado de defensa al final del turno.
         self.is_defending = False
 
     def reset_for_battle(self) -> None:
-        """Reinicia el personaje completamente para un nuevo episodio."""
+        # Reinicia el personaje completamente para un nuevo episodio.
         self.health = self._max_health
         self.is_defending = False
         self.cooldown = 3
 
     def is_alive(self) -> bool:
-        """Retorna True si el personaje tiene vida > 0."""
+        # Retorna True si el personaje tiene vida > 0.
         return self.health > 0
 
     # Getters

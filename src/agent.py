@@ -59,24 +59,24 @@ class QLearningAgent:
 
     @property
     def character(self):
-        """Retorna el personaje activo actual (compatibilidad con código anterior)."""
+        # Retorna el personaje activo actual (compatibilidad con código anterior).
         return self.team[self.active_index]
 
     def get_alive_team(self) -> List:
-        """Retorna lista de personajes vivos en el equipo."""
+        # Retorna lista de personajes vivos en el equipo.
         return [c for c in self.team if c.is_alive()]
 
     def get_bench(self) -> List[Tuple[int, any]]:
-        """Retorna lista de (índice, personaje) vivos que NO están activos."""
+        # Retorna lista de (índice, personaje) vivos que NO están activos.
         return [(i, c) for i, c in enumerate(self.team) 
                 if c.is_alive() and i != self.active_index]
 
     def count_alive(self) -> int:
-        """Cuenta personajes vivos en el equipo."""
+        # Cuenta personajes vivos en el equipo.
         return sum(1 for c in self.team if c.is_alive())
 
     def has_switch_available(self) -> bool:
-        """Retorna True si hay al menos un personaje vivo en el banco."""
+        # Retorna True si hay al menos un personaje vivo en el banco.
         return len(self.get_bench()) > 0
 
     def get_state(self, enemy_agent: "QLearningAgent") -> Tuple:
@@ -215,13 +215,13 @@ class QLearningAgent:
         self.q_table[(state, action)] = new_q
 
     def reset_for_episode(self) -> None:
-        """Reinicia el agente y todo su equipo para un nuevo episodio."""
+        # Reinicia el agente y todo su equipo para un nuevo episodio.
         self.active_index = 0
         for c in self.team:
             c.reset_for_battle()
 
     def all_fainted(self) -> bool:
-        """Retorna True si todos los personajes del equipo están KO."""
+        # Retorna True si todos los personajes del equipo están KO.
         return all(not c.is_alive() for c in self.team)
 
     def setgamma(self, gamma: float) -> None:
