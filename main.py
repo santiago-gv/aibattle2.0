@@ -1,5 +1,5 @@
 """
-Entrenament Q-Learning per a combat 3v3 estil Pokémon.
+Entrenament Q-Learning per a combat 3v3 singles.
 
 Dos agents Q-Learning competeixen amb equips de 3 personatges cadascun.
 Tipus de personatge: Tank, Hybrid, Offensive.
@@ -55,7 +55,7 @@ def main():
 
     # Configuració d'entrenament
     
-    EPISODES = 100000
+    EPISODES = 5000
     PRINT_EVERY = 500
 
     # Comptadors de victòries
@@ -122,8 +122,8 @@ def main():
         print(f"\nWinrate Final: A={100*wins_a/total:.1f}% | B={100*wins_b/total:.1f}%")
 
     # Mostrar mida de les Q-tables
-    print(f"\nEstats apresos Agent A: {len(agent_a.q_table)}")
-    print(f"Estats apresos Agent B: {len(agent_b.q_table)}")
+    print(f"\nEstats-acció apresos Agent A: {len(agent_a.q_table)}")
+    print(f"Estats-acció apresos Agent B: {len(agent_b.q_table)}")
 
     # Mostrar alguns valors Q interessants (top 10 per valor absolut)
     print("\n" + "-" * 40)

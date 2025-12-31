@@ -1,10 +1,11 @@
 """
-# Sistema de batalla singles estil Pokémon (3v3).
-# 
-# Cada agent té un equip de 3 personatges.
-# Només un personatge per equip està actiu a la vegada.
-# Accions: attack, defend, super_attack, switch.
-# Victòria: derrotar els 3 personatges de l'oponent.
+Sistema de batalla singles (3v3).
+
+Cada agent té un equip de 3 personatges.
+Només un personatge per equip està actiu a la vegada.
+Accions: attack, defend, super_attack, switch.
+Victòria: derrotar els 3 personatges de l'oponent.
+
 """
 
 import random
@@ -42,7 +43,7 @@ class Battle:
         if self._initiative_mode == "simultaneous":
             return [("A", a, b, action_a), ("B", b, a, action_b)], True
 
-        # Switches sempre tenen prioritat màxima (com a Pokémon)
+        # Switches sempre tenen prioritat màxima
         a_switches = action_a == "switch"
         b_switches = action_b == "switch"
         

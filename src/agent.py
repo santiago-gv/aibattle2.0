@@ -1,5 +1,5 @@
 """
-# Agent Q-Learning per a combat estil Pokémon (singles 3v3).
+# Agent Q-Learning per a combat (singles 3v3).
 # 
 # L'agent gestiona un equip de 3 personatges i aprèn:
 # - Quan atacar, defensar, usar super_attack
@@ -33,7 +33,7 @@ def discretize(health: int, max_health: int = 100) -> int:
 class QLearningAgent:
     """
     Agent Q-Learning que gestiona un equip de 3 personatges.
-    Aprèn política òptima per a combat singles estil Pokémon.
+    Aprèn política òptima per a combat singles estil.
     """
 
     def __init__(self, team: List):
@@ -197,20 +197,23 @@ class QLearningAgent:
         return False  # Tots KO - derrota
 
     def update_q(self, state: Tuple, action: str, reward: float, next_state: Tuple) -> None:
+
         """
         Actualitza Q-table usant l'equació de Q-Learning.
-        
         Q(s,a) = Q(s,a) + α * [r + γ * max_a' Q(s',a') - Q(s,a)]
         """
+
         old_q = self.q_table.get((state, action), 0.0)
         
         # Per al max futur, considerem totes les accions possibles en el següent estat
         # Nota: En estat terminal (derrota), future_q = 0
+
         future_actions = ["attack", "defend", "super_attack", "switch"]
+
         future_q = max(
             self.q_table.get((next_state, a), 0.0) for a in future_actions
         )
-        
+
         new_q = old_q + self.alpha * (reward + self.gamma * future_q - old_q)
         self.q_table[(state, action)] = new_q
 
